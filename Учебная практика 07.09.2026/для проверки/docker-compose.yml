@@ -1,0 +1,17 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: practice-postgres
+    environment:
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASS}
+      POSTGRES_DB: ${PG_DB}
+      PGDATA: ${PG_DATA}
+    volumes:
+      - ./data/:${PG_DATA}
+      - ./init-scripts/:/docker-entrypoint-initdb.d
+    ports:
+      - '${PG_PORT}:5432'
+
+volumes:
+  data:
