@@ -3,6 +3,3 @@ start-db:
 
 stop-db:
 	sudo docker compose down
-
-remove-db-data:
-	sudo rm -rf data/

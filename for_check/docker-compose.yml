@@ -6,12 +6,11 @@ services:
       POSTGRES_USER: ${PG_USER}
       POSTGRES_PASSWORD: ${PG_PASS}
       POSTGRES_DB: ${PG_DB}
-      PGDATA: ${PG_DATA}
     volumes:
-      - ./data/:${PG_DATA}
+      - pg-data:/var/lib/pgsql/data
       - ./init-scripts/:/docker-entrypoint-initdb.d
     ports:
       - '${PG_PORT}:5432'
 
 volumes:
-  data:
+  pg-data:
