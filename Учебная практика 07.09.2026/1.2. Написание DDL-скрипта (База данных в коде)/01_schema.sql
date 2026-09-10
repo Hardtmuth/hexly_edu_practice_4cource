@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS sales (
 	partner_id    INT NOT NULL REFERENCES partners(partner_id) ON DELETE CASCADE,
 	product_id    INT NOT NULL REFERENCES products(product_id) ON DELETE CASCADE,
 	quantity      INT NOT NULL CHECK (quantity > 0),
-	sale_price    NUMERIC(10, 2) NOT NULL,
+	sale_price    NUMERIC(10, 2),
   total_amount  NUMERIC(12, 2) GENERATED ALWAYS AS (quantity * sale_price) STORED,
 	created_at    TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at    TIMESTAMP NOT NULL DEFAULT NOW()
@@ -53,6 +53,26 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION set_sale_price_from_product()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.sale_price IS NULL THEN
+    SELECT price INTO NEW.sale_price
+    FROM products
+    WHERE product_id = NEW.product_id;
+  END IF;
+	IF NEW.sale_price IS NULL THEN
+    RAISE EXCEPTION 'Не удалось найти цену для product_id = %', NEW.product_id;
+  END IF;
+	RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_set_sale_price
+BEFORE INSERT ON sales
+FOR EACH ROW
+EXECUTE FUNCTION set_sale_price_from_product();
 
 CREATE TRIGGER trg_partners_updated_at
 BEFORE UPDATE ON partners

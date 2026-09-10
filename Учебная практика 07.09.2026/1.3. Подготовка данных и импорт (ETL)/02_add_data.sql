@@ -1,3 +1,9 @@
+INSERT INTO products (product_name, sku, stock, price)
+VALUES
+  ('Стиральный порошок "Альфа"','test001',70,500),
+  ('Мыло жидкое "Стандарт"','test002',400,90),
+  ('Кондиционер для белья','test003',50,350);
+
 INSERT INTO partners (company_name, inn, contact_email, phone, rating)
 VALUES
   ('ООО "Логистик-Экспресс"', '7701234567', 'info@logex.ru', '+7 (999) 111-22-33', 4.8),
