@@ -46,9 +46,16 @@ WITH new_partner AS (
     RETURNING partner_id
 )
 -- Запись о его первой тестовой доставке
-INSERT INTO sales (partner_id, product_id, quantity)
-SELECT partner_id, 1, 22
-FROM new_partner;
+INSERT INTO sales (partner_id, product_id, quantity, sale_price)
+SELECT 
+    np.partner_id,
+    p.product_id,
+    22 as quantity,
+    p.price as sale_price
+FROM products p
+CROSS JOIN new_partner np
+WHERE p.product_id = 1
+RETURNING *;
 
 COMMIT;
 
@@ -60,6 +67,6 @@ COMMIT;
 */
 
 SELECT * FROM sales_history
-WHERE partner_inn = '7701234567'
+WHERE partner_inn = '7072203406'
   AND sale_date BETWEEN '2026-01-01' AND '2026-12-31'
 ORDER BY sale_date DESC;

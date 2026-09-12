@@ -24,5 +24,7 @@ run:
 	@$(MAKE) start-db
 	@$(MAKE) import-data
 	@$(MAKE) run-queries
+
+remove:
 	@$(MAKE) stop-db
 	@$(MAKE) remove-db-volume
