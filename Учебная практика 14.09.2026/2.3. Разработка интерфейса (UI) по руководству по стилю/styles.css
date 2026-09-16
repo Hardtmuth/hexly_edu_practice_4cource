@@ -1,0 +1,48 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+header {
+  font-size: 20px;
+  padding: 30px;
+  background-color: lightblue;
+}
+
+h1 {
+  margin-left: 20px;
+  font-size: 18px;
+}
+
+.content {
+  margin: 20px;
+  border: 1px solid black;
+}
+
+.partner-card {
+  margin: 5px;
+  padding: 0px;
+  border: 1px solid black;
+  box-sizing: border-box;
+}
+
+.partner-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 50px 0px 20px;
+  margin: 0;
+}
+.partner-card-header p {
+  margin: 0;
+}
+.partner-data {
+  font-size: 12px;
+  padding: 5px 10px 10px 20px;
+  margin: 0;
+}
+.partner-data p {
+  margin: 0; 
+  line-height: 1.4;
+}
