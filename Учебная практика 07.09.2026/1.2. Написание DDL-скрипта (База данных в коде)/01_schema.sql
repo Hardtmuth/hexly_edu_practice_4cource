@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS partners (
 	contact_email  VARCHAR(255) NOT NULL UNIQUE,
 	phone 		     VARCHAR(20)  DEFAULT 'Not specified',
 	address        TEXT DEFAULT 'Not specified',
-	rating         NUMERIC(10, 2) CHECK (rating >= 1 AND rating <= 5) DEFAULT 3,
+	rating         NUMERIC(10, 2) NOT NULL DEFAULT 3 CHECK (rating >= 1 AND rating <= 5),
 	created_at     TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at     TIMESTAMP NOT NULL DEFAULT NOW()
 );

@@ -1,35 +1,36 @@
-import { getPartnersSummary } from './backend/answer.mjs'
+import routes from './routes.js'
 
 const state = {
-  partners: []
+  partners: [],
 }
 
-const content = document.querySelector(".content")
+const content = document.querySelector('.content')
 
 const renderPartners = () => {
   content.innerHTML = ''
 
-  state.partners.forEach(({company_name, inn, contact_email, phone, rating, discount}) => {
-    const partnerCard = document.createElement("div")
-    partnerCard.className = "partner-card"
+  state.partners.forEach(({ company_name, inn, contact_email, phone, rating, discount }) => {
+    const partnerCard = document.createElement('div')
+    partnerCard.className = 'partner-card'
 
-    const header = document.createElement("div")
-    header.className = "partner-card-header"
+    const header = document.createElement('div')
+    header.className = 'partner-card-header'
 
-    const partnerData = document.createElement("div")
-    partnerData.className = "partner-data"
+    const partnerData = document.createElement('div')
+    partnerData.className = 'partner-data'
 
-    const partnerName = document.createElement("p")
-    partnerName.innerText = `Партнер | ${company_name}`
+    const partnerName = document.createElement('p')
+    partnerName.textContent = `Партнер | ${company_name}`
 
-    const partnerRating = document.createElement("p")
-    partnerRating.innerText = `${!discount ? 0 : discount} %`
+    const partnerDiscount = document.createElement('p')
+    partnerDiscount.textContent = `${discount}%`
 
-    const data = document.createElement("p")
-    data.innerText = `${inn}\n${phone}\n${contact_email}\nРейтинг: ${!rating ? 0 : rating}`
+    const data = document.createElement('p')
+    data.className = 'partner-info'
+    data.textContent = `${inn}\n${phone ?? 'Телефон не указан'}\n${contact_email}\nРейтинг: ${rating}`
 
     header.appendChild(partnerName)
-    header.appendChild(partnerRating)
+    header.appendChild(partnerDiscount)
     partnerData.appendChild(data)
 
     partnerCard.appendChild(header)
@@ -40,12 +41,15 @@ const renderPartners = () => {
 
 const init = async () => {
   try {
-    state.partners = await getPartnersSummary()
+    const response = await fetch(routes.partnersSummaryPath())
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`)
+    }
+    state.partners = await response.json()
     renderPartners()
-  }
-  catch (e) {
+  } catch (e) {
     console.error('Не удалось загрузить партнёров:', e)
-    content.innerText = 'Ошибка загрузки данных партнёров.'
+    content.textContent = 'Ошибка загрузки данных партнёров.'
   }
 }
 

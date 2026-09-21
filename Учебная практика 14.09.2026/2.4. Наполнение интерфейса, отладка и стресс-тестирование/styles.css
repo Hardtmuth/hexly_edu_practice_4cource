@@ -43,7 +43,9 @@ h1 {
   padding: 5px 10px 10px 20px;
   margin: 0;
 }
-.partner-data p {
-  margin: 0; 
+
+.partner-info {
+  white-space: pre-line;
+  margin: 0;
   line-height: 1.4;
 }
