@@ -9,7 +9,7 @@ const content = document.querySelector('.content')
 const renderPartners = () => {
   content.innerHTML = ''
 
-  state.partners.forEach(({ company_name, inn, contact_email, phone, rating, discount }) => {
+  state.partners.forEach(({ legal_form, company_name, inn, contact_email, phone, rating, discount }) => {
     const partnerCard = document.createElement('div')
     partnerCard.className = 'partner-card'
 
@@ -20,7 +20,7 @@ const renderPartners = () => {
     partnerData.className = 'partner-data'
 
     const partnerName = document.createElement('p')
-    partnerName.textContent = `Партнер | ${company_name}`
+    partnerName.textContent = `${legal_form} | ${company_name}`
 
     const partnerDiscount = document.createElement('p')
     partnerDiscount.textContent = `${discount}%`

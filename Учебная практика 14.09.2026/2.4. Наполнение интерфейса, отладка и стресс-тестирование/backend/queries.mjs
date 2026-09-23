@@ -56,6 +56,7 @@ export const getAllPartnersWithTotalQuantity = async () => {
     const res = await pool.query(`
       SELECT
          p.partner_id,
+         p.legal_form,
          p.company_name,
          p.inn,
          p.contact_email,
@@ -67,6 +68,7 @@ export const getAllPartnersWithTotalQuantity = async () => {
        LEFT JOIN sales s ON p.partner_id = s.partner_id
        GROUP BY
          p.partner_id,
+         p.legal_form,
          p.company_name,
          p.inn,
          p.contact_email,

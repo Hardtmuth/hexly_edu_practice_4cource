@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { calculatePartnerDiscount } from './business_logic.mjs'
+import { calculatePartnerDiscount } from '../backend/business_logic.mjs'
 
 const red = '\x1b[41m'
 const green = '\x1b[42m'
@@ -10,7 +10,6 @@ const testCases = [
   { in: 10000, out: 5 },
   { in: 49999, out: 5 },
   { in: 50000, out: 10 },
-  { in: 29999, out: 10 },
   { in: 300000, out: 15 },
 ]
 

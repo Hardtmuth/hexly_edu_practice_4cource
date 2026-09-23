@@ -6,6 +6,7 @@
 
 SELECT
     p.partner_id,
+    p.legal_form,
     p.company_name,
     COUNT(s.sale_id) AS total_sales,
     p.rating,
@@ -41,8 +42,8 @@ FROM sales;
 
 -- Создание нового партнера
 WITH new_partner AS (
-    INSERT INTO partners (company_name, inn, contact_email, phone)
-    VALUES ('ООО Сименс Мобайл', '7072203406', 'mobile@siemens.ru', '+79209209200')
+    INSERT INTO partners (legal_form, company_name, inn, contact_email, phone)
+    VALUES ('ООО', 'Сименс Мобайл', '7072203406', 'mobile@siemens.ru', '+79209209200')
     RETURNING partner_id
 )
 -- Запись о его первой тестовой доставке
