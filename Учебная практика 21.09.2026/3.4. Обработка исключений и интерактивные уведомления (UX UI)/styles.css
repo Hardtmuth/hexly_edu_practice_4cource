@@ -1,0 +1,251 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+header {
+  font-size: 20px;
+  padding: 30px;
+  background-color: lightblue;
+}
+
+h1 {
+  font-size: 18px;
+}
+
+.content {
+  margin: 20px;
+  width: 500px;
+  border: 1px solid black;
+}
+
+.partner-card {
+  margin: 15px;
+  padding: 0px;
+  border: 1px solid black;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.partner-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 50px 0px 20px;
+  margin: 0;
+  font-weight: 700;
+}
+
+.partner-card-header p {
+  margin: 0;
+}
+
+.partner-data {
+  font-size: 12px;
+  padding: 5px 10px 10px 20px;
+  margin: 0;
+}
+
+.partner-info {
+  white-space: pre-line;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 20px 0 20px;
+  width: 500px;
+}
+
+button {
+  padding: 0 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 10vh;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  position: relative;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h3 {
+  margin: 0 0 20px 0;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+form.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+div.form-group {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  align-items: center;
+  gap: 10px;
+}
+
+input[type="email"],
+input[type="number"],
+input[type="text"],
+input[type="tel"],
+textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+textarea {
+  resize: none;
+  font-family: sans-serif;
+}
+
+select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+div.form-group:last-child {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+button[type="submit"], button[type="button"] {
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+button[type="submit"] {
+  background-color: #007bff;
+  color: white;
+  border: none;
+}
+
+.msgbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.msgbox {
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  min-width: 360px;
+  max-width: 480px;
+  display: flex;
+  gap: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+}
+
+.msgbox-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.msgbox-body {
+  flex: 1;
+}
+
+.msgbox-title {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.msgbox-text {
+  margin: 0 0 20px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #555;
+}
+
+.msgbox-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.msgbox-btn {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.msgbox-btn-ok {
+  background: #1976d2;
+  color: #fff;
+}
+
+.msgbox-btn-ok:hover {
+  background: #1565c0;
+}
+
+.msgbox-btn-cancel {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.msgbox-btn-cancel:hover {
+  background: #e0e0e0;
+}
