@@ -29,7 +29,6 @@ const salesHistoryAdapter = createEntityAdapter({
 const initialState = salesHistoryAdapter.getInitialState({
   status: 'idle',
   error: null,
-  currentPartnerId: null,
 })
 
 const salesHistorySlice = createSlice({
@@ -40,12 +39,10 @@ const salesHistorySlice = createSlice({
       .addCase(fetchSalesHistory.pending, (state, action) => {
         state.status = 'loading'
         state.error = null
-        state.currentPartnerId = action.meta.arg
       })
       .addCase(fetchSalesHistory.fulfilled, (state, action) => {
         state.status = 'succeeded'
         salesHistoryAdapter.setAll(state, action.payload)
-        state.currentPartnerId = action.payload.partnerId
       })
       .addCase(fetchSalesHistory.rejected, (state, action) => {
         state.status = 'failed'

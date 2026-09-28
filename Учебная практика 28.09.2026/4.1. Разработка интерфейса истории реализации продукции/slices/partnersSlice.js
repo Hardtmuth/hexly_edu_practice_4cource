@@ -46,6 +46,24 @@ export const editPartner = createAsyncThunk(
   },
 )
 
+export const getPartner = createAsyncThunk(
+  'partners/getPartner',
+  async (partnerId, { rejectWithValue }) => {
+    console.log('[SLICE] get partner inbound: ', partnerId)
+    if (!partnerId || partnerId === '' || Number.isNaN(Number(partnerId))) {
+      return rejectWithValue('Некорректный ID партнёра')
+    }
+    try {
+      const response = await axios.get(routes.partnerPath(partnerId))
+      console.log('[SLICE] get partner response: ', response.data)
+      return response.data
+    } catch (error) {
+      console.error('[SLICE] Error get partner:', error)
+      return rejectWithValue(error.response?.data || { error: error.message })
+    }
+  }
+)
+
 const partnersAdapter = createEntityAdapter({
   selectId: (entity) => entity.partner_id,
 })
@@ -53,6 +71,7 @@ const partnersAdapter = createEntityAdapter({
 const initialState = partnersAdapter.getInitialState({
   status: 'idle',
   error: null,
+  currentPartner: null
 })
 
 const partnersSlice = createSlice({
@@ -96,6 +115,17 @@ const partnersSlice = createSlice({
       })
       .addCase(editPartner.rejected, (state, action) => {
         state.status = 'failed'
+        state.error = action.payload?.error || action.error.message || 'Unknown error'
+      })
+
+      .addCase(getPartner.pending, (state) => {
+        state.currentPartner = null
+      })
+      .addCase(getPartner.fulfilled, (state, action) => {
+        state.currentPartner = action.payload
+      })
+      .addCase(getPartner.rejected, (state, action) => {
+        state.currentPartner = null
         state.error = action.payload?.error || action.error.message || 'Unknown error'
       })
   },

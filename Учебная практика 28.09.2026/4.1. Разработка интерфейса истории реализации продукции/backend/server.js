@@ -1,7 +1,7 @@
 import fastify from 'fastify'
 import cors from '@fastify/cors'
 import { getPartnersSummary } from './answer.mjs'
-import { addPartner, updatePartner, getSalesHistory } from './queries.mjs'
+import { addPartner, updatePartner, getSalesHistory, getPartner } from './queries.mjs'
 
 const apiPath = '/api/v1'
 const getPath = (keyword) => [apiPath, keyword].join('/')
@@ -72,11 +72,23 @@ const server = async () => {
   })
 
   app.get(getPath('sales-history/:partnerId'), async (request, reply) => {
+    // console.log(request)
     const { partnerId } = request.params
     try {
       const partnersHistory = await getSalesHistory(partnerId)
       console.log(partnersHistory)
       reply.send(partnersHistory)
+    } catch {
+      reply.status(500).send({ error: 'Ошибка получения данных партнёров' })
+    }
+  })
+
+  app.get(getPath('partners/:partnerId'), async (request, reply) => {
+    const { partnerId } = request.params
+    try {
+      const partner = await getPartner(partnerId)
+      console.log('getPartner res: ', partner)
+      reply.send(partner)
     } catch {
       reply.status(500).send({ error: 'Ошибка получения данных партнёров' })
     }

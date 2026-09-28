@@ -210,20 +210,30 @@ export const getSalesHistory = async (partnerId) => {
     const res = await pool.query(
       `SELECT
         s.sale_id,
-        pr.company_name,
-        pr.legal_form,
         p.product_name,
         s.quantity,
         TO_CHAR(s.created_at, 'DD.MM.YYYY') AS sale_date
-      FROM partners pr
-      LEFT JOIN sales s ON pr.partner_id = s.partner_id
-      LEFT JOIN products p ON s.product_id = p.product_id
-      WHERE pr.partner_id = $1
-      ORDER BY s.created_at DESC NULLS LAST;
+      FROM sales s
+      INNER JOIN products p ON s.product_id = p.product_id
+      WHERE s.partner_id = $1
+      ORDER BY s.created_at DESC;
       `,
       [partnerId]
     )
     return res.rows
+  } catch (e) {
+    console.error('Ошибка получения данных партнёра:', e)
+    throw e
+  }
+}
+
+export const getPartner = async (partnerId) => {
+  try {
+    const res = await pool.query(
+      `SELECT company_name, legal_form FROM partners WHERE partner_id = $1`,
+      [partnerId]
+    )
+    return res.rows[0]
   } catch (e) {
     console.error('Ошибка получения данных партнёра:', e)
     throw e

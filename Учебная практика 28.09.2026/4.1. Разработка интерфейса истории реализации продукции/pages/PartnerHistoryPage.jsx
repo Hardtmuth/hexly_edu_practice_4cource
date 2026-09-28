@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router'
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchSalesHistory, salesHistorySelectors } from '../slices/salesHistory'
+import { getPartner } from '../slices/partnersSlice'
 
 import { Header } from '../components/Header'
 import { PageTitle } from '../components/PageTitle'
@@ -13,23 +14,28 @@ export const PartnerHistoryPage = () => {
   const navigate = useNavigate()
 
   const history = useSelector(salesHistorySelectors.selectAll)
+  const partnerInfo = useSelector((state) => state.partners.currentPartner)
   const status = useSelector((state) => state.salesHistory.status)
   const error = useSelector((state) => state.salesHistory.error)
 
   useEffect(() => {
-    dispatch(fetchSalesHistory(partnerId))
+    if (partnerId) {
+      dispatch(getPartner(partnerId))
+      dispatch(fetchSalesHistory(partnerId))
+    }
   }, [partnerId])
 
-  if (status === 'loading' && history.length === 0) {
-    return <div>Загрузка истории продаж партнера...</div>
+  if ((status === 'loading' || status === 'idle') && (history.length === 0 || !partnerInfo)) {
+    return <div>Загрузка истории продаж партнёра...</div>
   }
+
   if (status === 'failed') return <div>Ошибка: {error}</div>
 
   const handleBackClick = () => {
     navigate('/')
   }
 
-  const title = `CRM: История реализации продукции - партнёр "${history[0].legal_form} ${history[0].company_name}"`
+  const title = `CRM: История реализации продукции - партнёр "${partnerInfo.legal_form} ${partnerInfo.company_name}"`
 
   const RenderSalesTable = (salesLIst) => {
     const { sale_id, product_name, quantity, sale_date } = salesLIst
@@ -51,9 +57,10 @@ export const PartnerHistoryPage = () => {
           <div className='partner-card-header'>
             <h1>{title}</h1>
           </div>
-          {!history[0].sale_id
-            ? <p>У данного партнера нет продаж</p>
-            : (
+          {history.length === 0
+            ? (
+              <p className='partner-data'>У данного партнера нет продаж</p>
+            ) : (
             <div>
               <table>
                 <tr>
