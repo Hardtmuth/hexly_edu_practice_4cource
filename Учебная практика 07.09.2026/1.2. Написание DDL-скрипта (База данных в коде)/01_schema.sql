@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS sales (
 CREATE OR REPLACE VIEW sales_history AS
 SELECT
     s.sale_id,
+		s.partner_id,
     s.created_at AS sale_date,
 		pr.legal_form AS partner_legal_form,
     pr.company_name AS partner_name,
