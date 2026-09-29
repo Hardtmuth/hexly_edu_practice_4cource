@@ -63,12 +63,16 @@ export const PartnerHistoryPage = () => {
             ) : (
             <div>
               <table>
-                <tr>
-                  <th>Наименование продукции</th>
-                  <th>Количество (шт.)</th>
-                  <th>Дата продажи</th>
-                </tr>
-                {history.map(RenderSalesTable)}
+                <thead>
+                  <tr>
+                    <th>Наименование продукции</th>
+                    <th>Количество (шт.)</th>
+                    <th>Дата продажи</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {history.map(RenderSalesTable)}
+                </tbody>
               </table>
             </div>
             )
