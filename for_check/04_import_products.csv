@@ -1,0 +1,4 @@
+product_name;product_type_id;material_type_id;sku;stock;price
+Стиральный порошок "Альфа";1;2;test001;70;500
+Мыло жидкое "Стандарт";2;1;test002;400;90
+Кондиционер для белья;3;1;test003;50;350

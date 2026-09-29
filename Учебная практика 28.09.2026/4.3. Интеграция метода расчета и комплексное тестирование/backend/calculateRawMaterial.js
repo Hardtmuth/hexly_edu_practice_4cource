@@ -28,7 +28,6 @@ const getMaterialDefectPercent = (materialTypeId) => {
 
 // Расчёт расхода сырья.
 // Возвращает -1 при любых ошибках валидации или отсутствии записей в БД.
-
 export const calculateRawMaterial = (productTypeId, materialTypeId, quantity, param1, param2) => {
   if (!Number.isInteger(quantity) || quantity <= 0) {
     return -1

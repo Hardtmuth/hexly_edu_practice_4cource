@@ -41,7 +41,7 @@ const normalizeCsv = (csvFileNameList) => {
 const importData = async (normalizedFileList) => {
   console.log(`\n${yellow} ------- Import data from CSV ------ ${reset}\n`)
   for(const f of normalizedFileList) {
-    const table = f.split('_')[2].split('.')[0]
+    const table = f.includes('types') ? (`${f.split('_')[2]}_${f.split('_')[3]}`).split('.')[0] : f.split('_')[2].split('.')[0]
     const header = fs.readFileSync(f, 'utf8').split(/\r?\n/)[0].replaceAll(';', ', ')
     const filePath = path.resolve(dir, f)
 
@@ -72,7 +72,7 @@ const importData = async (normalizedFileList) => {
 const checkData = async (normalizedFileList) => {
   console.log(`\n${yellow} ------- Check data in tables ------ ${reset}\n`)
   for(const f of normalizedFileList) {
-    const table = f.split('_')[2].split('.')[0]
+    const table = f.includes('types') ? (`${f.split('_')[2]}_${f.split('_')[3]}`).split('.')[0] : f.split('_')[2].split('.')[0]
     const content = fs.readFileSync(f, 'utf8')
     const dataRowsCount = content.split(/\r?\n/).length - 1
 
