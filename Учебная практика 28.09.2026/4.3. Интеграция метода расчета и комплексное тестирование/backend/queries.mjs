@@ -239,3 +239,54 @@ export const getPartner = async (partnerId) => {
     throw e
   }
 }
+
+export const getProducts = async () => {
+  try {
+    const res = await pool.query(
+      `SELECT product_id, product_name, product_type_id, material_type_id FROM products`,
+    )
+    return res.rows ?? null
+  } catch (e) {
+    console.error('Ошибка получения списка продуктов:', e)
+    throw e
+  }
+}
+
+export const getProduct = async (productId) => {
+  try {
+    const res = await pool.query(
+      `SELECT product_id, product_name, product_type_id, material_type_id FROM products WHERE product_id = $1`,
+      [productId]
+    )
+    return res.rows[0] ?? null
+  } catch (e) {
+    console.error('Ошибка получения данных продукта:', e)
+    throw e
+  }
+}
+
+export const getProductCoefficient = async (productTypeId) => {
+  try {
+    const res = await pool.query(
+      `SELECT coefficient FROM product_types WHERE product_type_id = $1`,
+      [productTypeId]
+    )
+    return res.rows[0] ?? null
+  } catch (e) {
+    console.error('Ошибка получения коэффициента:', e)
+    throw e
+  }
+}
+
+export const getMaterialDefectPercent = async (materialTypeId) => {
+  try {
+    const res = await pool.query(
+      `SELECT waste_percent FROM material_types WHERE material_type_id = $1`,
+      [materialTypeId]
+    )
+    return res.rows[0] ?? null
+  } catch (e) {
+    console.error('Ошибка получения процента брака материала:', e)
+    throw e
+  }
+}

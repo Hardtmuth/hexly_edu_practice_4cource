@@ -1,237 +1,156 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import '../styles.css'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { calculateRawMaterialThunk } from '../slices/calculationSlice'
+import { productSelectors, fetchProducts } from '../slices/productSlice'
 import { MessageBox } from './MessageBox'
+import '../styles.css'
+
+const INITIAL_FORM = {
+  productId: '',
+  quantity: '',
+  param1: '',
+  param2: '',
+}
+
+const PRODUCTS = [
+  { productId: 1, productName: 'Стиральный порошок "Альфа"' },
+  { productId: 2, productName: 'Мыло жидкое "Стандарт"' },
+  { productId: 3, productName: 'Кондиционер для белья' },
+] // TODO: заменить на fetch из Redux
 
 export const OrderCalc = ({ isOpen, onClose }) => {
   const dispatch = useDispatch()
-  const [errors, setErrors] = useState({})
-
+  const products = useSelector(productSelectors.selectAll)
+  const [form, setForm] = useState(INITIAL_FORM)
+  const [formCalcResult, setFormCalcResult] = useState(null)
   const [msgBox, setMsgBox] = useState({
     type: 'info',
     message: '',
     showCancel: false,
   })
 
-  const formFields = {
-    productId: null,
-    quantity: 0,
-    param1: 0,
-    param2: 0,
-  }
-
-  const [form, setForm] = useState(formFields)
+  useEffect(() => {
+    if (isOpen && !products.length) {
+      dispatch(fetchProducts())
+    }
+  }, [isOpen])
 
   if (!isOpen) return null
 
   const handleChange = (e) => {
     const { name, value } = e.target
 
-    if (name === 'param1' || name === 'param2') {
-      if (value === '') {
-        setForm((prev) => ({ ...prev, [name]: '' }))
-        return
-      }
-      const num = Number(value)
+    if (value === '') {
+      setForm((prev) => ({ ...prev, [name]: '' }))
+      return
+    }
 
-      if (Number.isNaN(num)) {
-        return
-      }
-      // Ограничиваем диапазон [1, 5]
-      let limited = Math.max(1, Math.min(5, num))
-      // Округляем до 1 знака после запятой (шаг 0.1)
-      limited = Math.round(limited * 10) / 10
+    const num = Number(value)
+    if (Number.isNaN(num)) return
+
+    if (name === 'param1' || name === 'param2') {
+      const limited = Math.max(1, Math.min(5, Math.round(num * 10) / 10))
       setForm((prev) => ({ ...prev, [name]: limited }))
       return
     }
 
-    if (name === 'quantity') {
-      if (value === '') {
-        setForm((prev) => ({ ...prev, [name]: '' }))
-        return
-      }
-      const num = Number(value)
-
-      if (Number.isNaN(num)) {
-        return
-      }
-      setForm((prev) => ({ ...prev, [name]: num }))
-      return
-    }
-
-    setForm((prev) => ({ ...prev, [name]: value }))
+    setForm((prev) => ({ ...prev, [name]: num }))
   }
 
-  // Валидация перед отправкой
   const validate = () => {
-    const errs = {}
-
     if (!form.productId) {
-      errs.productId = true
       setMsgBox({
         type: 'error',
-        message:
-          'Продукт не выбран. Пожалуйста, выберете продукт и повторите попытку.',
+        message: 'Продукт не выбран. Выберите продукт и повторите попытку.',
         showCancel: false,
       })
       return false
     }
 
-    if (form.quantity !== undefined && form.quantity !== null && form.quantity !== '') {
-      const q = Number(form.quantity)
-      if (Number.isNaN(q)) {
-        errs.quantity = true
-        setMsgBox({
-          type: 'error',
-          message:
-            'Количество не указано. Пожалуйста, введите количество и повторите попытку.',
-          showCancel: false,
-        })
-        return false
-      }
-      if (q < 0) {
-        errs.rating = true
-        setMsgBox({
-          type: 'error',
-          message:
-            'Количество не может быть отрицательным. Пожалуйста, введите значение больше 0 и повторите попытку.',
-          showCancel: false,
-        })
-        return false
-      }
+    const q = Number(form.quantity)
+    if (!form.quantity || Number.isNaN(q) || q <= 0) {
+      setMsgBox({
+        type: 'error',
+        message: 'Количество должно быть положительным целым числом.',
+        showCancel: false,
+      })
+      return false
     }
 
-    if (form.param1 !== undefined && form.param1 !== null && form.param1 !== '') {
-      const p1 = Number(form.param1)
-      if (Number.isNaN(p1)) {
-        errs.param1 = true
-        setMsgBox({
-          type: 'error',
-          message:
-            'Параметр 1 не указан. Пожалуйста, введите Параметр 1 и повторите попытку.',
-          showCancel: false,
-        })
-        return false
-      }
-      if (p1 < 0 || p1 > 5) {
-        errs.rating = true
-        setMsgBox({
-          type: 'error',
-          message:
-            'Параметр 1 не может быть отрицательным или превышать 5. Пожалуйста, введите значение от 0 до 5 и повторите попытку.',
-          showCancel: false,
-        })
-        return false
-      }
+    const p1 = Number(form.param1)
+    if (!form.param1 || Number.isNaN(p1) || p1 <= 0 || p1 > 5) {
+      setMsgBox({
+        type: 'error',
+        message: 'Параметр 1 должен быть числом от 0.1 до 5.',
+        showCancel: false,
+      })
+      return false
     }
 
-    if (form.param2 !== undefined && form.param2 !== null && form.param2 !== '') {
-      const p2 = Number(form.param2)
-      if (Number.isNaN(p2)) {
-        errs.param2 = true
-        setMsgBox({
-          type: 'error',
-          message:
-            'Параметр 2 не указан. Пожалуйста, введите Параметр 2 и повторите попытку.',
-          showCancel: false,
-        })
-        return false
-      }
-      if (p2 < 0 || p2 > 5) {
-        errs.rating = true
-        setMsgBox({
-          type: 'error',
-          message:
-            'Параметр 2 не может быть отрицательным или превышать 5. Пожалуйста, введите значение от 0 до 5 и повторите попытку.',
-          showCancel: false,
-        })
-        return false
-      }
+    const p2 = Number(form.param2)
+    if (!form.param2 || Number.isNaN(p2) || p2 <= 0 || p2 > 5) {
+      setMsgBox({
+        type: 'error',
+        message: 'Параметр 2 должен быть числом от 0.1 до 5.',
+        showCancel: false,
+      })
+      return false
     }
 
-    setErrors(errs)
     return true
   }
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (!validate()) return
 
     const payload = {
-      ...form,
-      productId: Number(form.productId) // FIX
+      productId: Number(form.productId),
+      quantity: Number(form.quantity),
+      param1: Number(form.param1),
+      param2: Number(form.param2),
     }
 
     try {
-      console.log('Submited payload: ', payload)
-      // await dispatch(addPartner(payload)).unwrap()
+      const res = await dispatch(calculateRawMaterialThunk(payload)).unwrap()
+
+      if (res.result === -1) {
+        setFormCalcResult(null)
+        setMsgBox({
+          type: 'error',
+          message: res.error || 'Ошибка расчёта. Проверьте введённые данные.',
+          showCancel: false,
+        })
+        return
+      }
+
+      setFormCalcResult(res.result)
       setMsgBox({
         type: 'info',
-        message: `Результат рассчета ${JSON.stringify(payload)}`, // TODO fetch result
+        message: `Результат расчёта: ${res.result} единиц сырья`,
         showCancel: false,
       })
     } catch (error) {
-      console.error('Ошибка при получении результатов рассчета:', error)
-      const serverMessage = error?.error
-      || 'Не удалось получить результаты расчета. Возможно, сервер временно недоступен или данные некорректны. Попробуйте позже.'
-
+      setFormCalcResult(null)
       setMsgBox({
         type: 'error',
-        message: serverMessage,
+        message: error?.error
+          || 'Не удалось получить результат. Сервер недоступен или данные некорректны.',
         showCancel: false,
       })
     }
   }
 
   const handleClose = () => {
-    const hasData = Object.values(form).some(
-      (v) => v && String(v).trim() !== ''
-    )
-    if (hasData) {
-      setMsgBox({
-        type: 'warning',
-        message:
-          'Вы заполнили часть полей. При закрытии окна все несохранённые данные будут потеряны. Продолжить?',
-        showCancel: true,
-      })
-    } else {
-      onClose()
-    }
+    setForm(INITIAL_FORM)
+    setFormCalcResult(null)
+    setMsgBox({ type: 'info', message: '', showCancel: false })
+    onClose()
   }
 
   const handleMsgBoxConfirm = () => {
     setMsgBox({ type: 'info', message: '', showCancel: false })
-    setForm(formFields)
-    onClose()
-  }
-
-  const handleMsgBoxCancel = () => {
-    setMsgBox({ type: 'info', message: '', showCancel: false })
-  }
-
-  const productsMap = [
-    { productId: 1, productName: 'Стиральный порошок "Альфа"'},
-    { productId: 2, productName: 'Мыло жидкое "Стандарт"'},
-    { productId: 3, productName: 'Кондиционер для белья'},
-  ] // TODO Fetch product list with ID*
-
-  const RenderProductsOptions = (productList) => {
-    return (
-      <>
-        <option value=''>Выберете продукт</option>
-        {productList.map(p => {
-          return (
-            <option
-              key={p.productId}
-              value={p.productId}
-            >
-              {p.productName}
-            </option>
-          )
-          })}
-      </>
-    )
   }
 
   return createPortal(
@@ -241,7 +160,6 @@ export const OrderCalc = ({ isOpen, onClose }) => {
         <h3>Калькулятор заказа</h3>
 
         <form onSubmit={handleSubmit} className="form-group">
-          {/* Выпадающий список */}
           <div className="form-group">
             <label htmlFor="productId">Продукт</label>
             <select
@@ -251,7 +169,12 @@ export const OrderCalc = ({ isOpen, onClose }) => {
               onChange={handleChange}
               required
             >
-              {RenderProductsOptions(productsMap)}
+              <option value="" disabled>Выберите продукт</option>
+              {products.map((p) => (
+                <option key={p.product_id} value={p.product_id}>
+                  {p.product_name}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -263,7 +186,7 @@ export const OrderCalc = ({ isOpen, onClose }) => {
               name="quantity"
               value={form.quantity}
               onChange={handleChange}
-              placeholder="От 1 до 5 (например: 4.5)"
+              placeholder="Целое число больше 0 (например: 100)"
             />
           </div>
 
@@ -276,7 +199,7 @@ export const OrderCalc = ({ isOpen, onClose }) => {
               step="0.1"
               value={form.param1}
               onChange={handleChange}
-              placeholder="От 1 до 5 (например: 4.5)"
+              placeholder="От 0.1 до 5 (например: 4.5)"
             />
           </div>
 
@@ -289,23 +212,33 @@ export const OrderCalc = ({ isOpen, onClose }) => {
               step="0.1"
               value={form.param2}
               onChange={handleChange}
-              placeholder="От 1 до 5 (например: 4.5)"
+              placeholder="От 0.1 до 5 (например: 4.5)"
             />
           </div>
 
           <div className="form-group">
-            <button type="button" onClick={handleClose}>Отмена</button>
+            <h4>
+              {formCalcResult !== null
+                ? `Результат расчёта: ${formCalcResult}`
+                : 'Результат расчёта: -'}
+            </h4>
+          </div>
+
+          <div className="form-group">
+            <button type="button" onClick={handleClose}>Закрыть</button>
             <button type="submit">Рассчитать</button>
           </div>
         </form>
       </div>
-      <MessageBox
-        type={msgBox.type}
-        message={msgBox.message}
-        showCancel={msgBox.showCancel}
-        onConfirm={handleMsgBoxConfirm}
-        onCancel={handleMsgBoxCancel}
-      />
+      {msgBox.message && (
+        <MessageBox
+          type={msgBox.type}
+          message={msgBox.message}
+          showCancel={msgBox.showCancel}
+          onConfirm={handleMsgBoxConfirm}
+          onCancel={handleMsgBoxConfirm}
+        />
+      )}
     </div>,
     document.body
   )

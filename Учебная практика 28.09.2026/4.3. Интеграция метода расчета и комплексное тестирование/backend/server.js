@@ -1,7 +1,8 @@
 import fastify from 'fastify'
 import cors from '@fastify/cors'
 import { getPartnersSummary } from './answer.mjs'
-import { addPartner, updatePartner, getSalesHistory, getPartner } from './queries.mjs'
+import { addPartner, updatePartner, getSalesHistory, getPartner, getProduct, getProducts } from './queries.mjs'
+import { calculateRawMaterial } from './calculateRawMaterial.js'
 
 const apiPath = '/api/v1'
 const getPath = (keyword) => [apiPath, keyword].join('/')
@@ -89,6 +90,48 @@ const server = async () => {
       const partner = await getPartner(partnerId)
       console.log('getPartner res: ', partner)
       reply.send(partner)
+    } catch {
+      reply.status(500).send({ error: 'Ошибка получения данных партнёров' })
+    }
+  })
+
+  app.post(getPath('calculate-raw-material'), async (request, reply) => {
+    const { productId, quantity, param1, param2 } = request.body
+
+    try {
+      const productData = await getProduct(productId)
+      if (!productData) {
+        reply.status(404).send({ result: -1, error: 'Продукт не найден' })
+        return
+      }
+
+      const { product_type_id, material_type_id } = productData
+
+      const result = await calculateRawMaterial(
+        product_type_id,
+        material_type_id,
+        Number(quantity),
+        Number(param1),
+        Number(param2)
+      )
+
+      if (result === -1) {
+        reply.status(400).send({ result: -1, error: 'Некорректные данные для расчёта' })
+        return
+      }
+
+      reply.send({ result, error: null })
+    } catch (e) {
+      console.error('Ошибка расчёта сырья:', e)
+      reply.status(500).send({ result: -1, error: 'Внутренняя ошибка сервера' })
+    }
+  })
+
+  app.get(getPath('products'), async (request, reply) => {
+    try {
+      const productList = await getProducts()
+      console.log('getProducts res: ', productList)
+      reply.send(productList)
     } catch {
       reply.status(500).send({ error: 'Ошибка получения данных партнёров' })
     }

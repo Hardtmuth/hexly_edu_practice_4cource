@@ -1,4 +1,5 @@
 const { ceil } = Math
+import { getProductCoefficient, getMaterialDefectPercent } from './queries.mjs'
 
 // Мок-справочники БД
 const PRODUCT_TYPES = {
@@ -13,7 +14,7 @@ const MATERIAL_TYPES = {
   12: 7.0,
 }
 
-// Имитация запроса к БД: возвращает коэффициент типа продукции.
+/* // Имитация запроса к БД: возвращает коэффициент типа продукции.
 // SELECT coefficient FROM product_types WHERE id = $1, [productTypeId]
 const getProductCoefficient = (productTypeId) => {
   return PRODUCT_TYPES[productTypeId] ?? null
@@ -23,12 +24,12 @@ const getProductCoefficient = (productTypeId) => {
 // SELECT waste_percent FROM material_types WHERE id = $1, [materialTypeId]
 const getMaterialDefectPercent = (materialTypeId) => {
   return MATERIAL_TYPES[materialTypeId] ?? null
-}
+} */
 
 
 // Расчёт расхода сырья.
 // Возвращает -1 при любых ошибках валидации или отсутствии записей в БД.
-export const calculateRawMaterial = (productTypeId, materialTypeId, quantity, param1, param2) => {
+export const calculateRawMaterial = async (productTypeId, materialTypeId, quantity, param1, param2) => {
   if (!Number.isInteger(quantity) || quantity <= 0) {
     return -1
   }
@@ -41,23 +42,27 @@ export const calculateRawMaterial = (productTypeId, materialTypeId, quantity, pa
     return -1
   }
 
-  const coefficient = getProductCoefficient(productTypeId)
-  if (coefficient === null) {
+  // Коэффициент и процент брака — асинхронные запросы к БД
+  const productTypeRow = await getProductCoefficient(productTypeId)
+  if (!productTypeRow) {
     return -1
   }
 
-  const defectPercent = getMaterialDefectPercent(materialTypeId);
-  if (defectPercent === null) {
+  const materialTypeRow = await getMaterialDefectPercent(materialTypeId)
+  if (!materialTypeRow) {
     return -1
   }
 
-  // 1. Базовый расход на 1 ед. = param_1 * param_2 * Коэффициент типа продукции
+  const coefficient = Number(productTypeRow.coefficient)
+  const defectPercent = Number(materialTypeRow.waste_percent)
+
+  // 1. Базовый расход на 1 ед.
   const basePerUnit = param1 * param2 * coefficient
 
-  // 2. Общий чистый расход = Базовый расход на 1 ед. * quantity
+  // 2. Общий чистый расход
   const totalClean = basePerUnit * quantity
 
-  // 3. Итоговый расход с учётом брака = Общий чистый расход * (1 + (Процент брака / 100))
+  // 3. Итоговый расход с учётом брака
   const totalWithDefect = totalClean * (1 + defectPercent / 100)
 
   // 4. Округление в большую сторону
