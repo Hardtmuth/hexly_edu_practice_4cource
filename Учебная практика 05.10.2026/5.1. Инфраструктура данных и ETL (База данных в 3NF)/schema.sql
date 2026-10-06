@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS partners (
     legal_form     VARCHAR(50) NOT NULL,
     partner_name   VARCHAR(255) NOT NULL,
     inn            VARCHAR(12) NOT NULL UNIQUE,
-    contact_email  VARCHAR(255) NOT NULL UNIQUE,
+    email  VARCHAR(255) NOT NULL UNIQUE,
     phone          VARCHAR(20) NOT NULL DEFAULT 'Not specified',
     address        TEXT NOT NULL DEFAULT 'Not specified',
     director_name  VARCHAR(255) NOT NULL DEFAULT 'Not specified',
