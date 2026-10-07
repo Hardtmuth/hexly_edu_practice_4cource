@@ -1,7 +1,10 @@
 import fastify from 'fastify'
 import cors from '@fastify/cors'
 import dbPlugin from './plugins/db.js'
-import routes from './plugins/routes.js'
+import errorHandlerPlugin from './plugins/errorHandler.js'
+import routes from './routes/index.js'
+import partnersRoutes from './routes/partners/partners.route.js'
+import productsRoutes from './routes/products/products.route.js'
 
 const loggerConfig = {
   transport: {
@@ -24,7 +27,10 @@ export const createApp = async () => {
   })
 
   await app.register(dbPlugin)
+  await app.register(errorHandlerPlugin)
   await app.register(routes)
+  await app.register(partnersRoutes)
+  await app.register(productsRoutes)
 
   return app
 }
