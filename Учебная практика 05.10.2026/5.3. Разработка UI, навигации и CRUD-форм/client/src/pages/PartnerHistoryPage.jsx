@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router'
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchSalesHistory, salesHistorySelectors } from '../slices/salesHistory'
-import { getPartner } from '../slices/partnersSlice'
+import { fetchSalesHistory, salesHistorySelectors } from '../stores/salesHistory'
+import { getPartner } from '../stores/partnersSlice'
 
-import { Header } from '../components/Header'
-import { PageTitle } from '../components/PageTitle'
+import { Header } from '../components/ui/Header'
+import { PageTitle } from '../components/ui/PageTitle'
 
 
 export const PartnerHistoryPage = () => {

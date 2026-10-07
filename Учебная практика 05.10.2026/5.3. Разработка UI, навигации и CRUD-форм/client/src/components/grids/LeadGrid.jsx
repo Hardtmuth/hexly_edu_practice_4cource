@@ -1,11 +1,11 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
-import { fetchPartners, partnersSelectors } from '../slices/partnersSlice'
+import { fetchPartners, partnersSelectors } from '../../stores/partnersSlice'
 
-import { AddModal } from './AddModal'
-import { EditModal } from './EditModal'
-import { OrderCalc } from './OrderCalc'
+import { AddModal } from '../modals/AddModal'
+import { EditModal } from '../modals/EditModal'
+import { OrderCalc } from '../modals/OrderCalc'
 
 
 export const LeadGrid = () => {

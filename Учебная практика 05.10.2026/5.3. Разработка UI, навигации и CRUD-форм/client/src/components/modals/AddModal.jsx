@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { createPortal } from 'react-dom'
-import '../styles.css'
+import '../../assets/styles.css'
 import { useDispatch } from 'react-redux'
-import { addPartner } from '../slices/partnersSlice'
+import { addPartner } from '../../stores/partnersSlice'
 import { MessageBox } from './MessageBox'
 
 export const AddModal = ({ isOpen, onClose }) => {

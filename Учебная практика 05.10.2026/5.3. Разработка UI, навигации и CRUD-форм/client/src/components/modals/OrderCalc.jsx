@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { calculateRawMaterialThunk } from '../slices/calculationSlice'
-import { productSelectors, fetchProducts } from '../slices/productSlice'
+import { calculateRawMaterialThunk } from '../../stores/calculationSlice'
+import { productSelectors, fetchProducts } from '../../stores/productSlice'
 import { MessageBox } from './MessageBox'
-import '../styles.css'
+import '../../assets/styles.css'
 
 const INITIAL_FORM = {
   productId: '',

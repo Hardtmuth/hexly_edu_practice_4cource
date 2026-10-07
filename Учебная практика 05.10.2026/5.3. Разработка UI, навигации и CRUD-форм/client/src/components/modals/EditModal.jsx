@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { createPortal } from 'react-dom'
-import '../styles.css'
+import '../../assets/styles.css'
 import { useDispatch } from 'react-redux'
-import { editPartner } from '../slices/partnersSlice'
+import { editPartner } from '../../stores/partnersSlice'
 import { MessageBox } from './MessageBox'
 
 export const EditModal = ({ isOpen, onClose, partner }) => {

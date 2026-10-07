@@ -1,6 +1,6 @@
-import { Header } from '../components/Header'
-import { LeadGrid } from '../components/LeadGrid'
-import { PageTitle } from '../components/PageTitle'
+import { Header } from '../components/ui/Header'
+import { LeadGrid } from '../components/grids/LeadGrid'
+import { PageTitle } from '../components/ui/PageTitle'
 
 export const MainPage = () => {
   return (
